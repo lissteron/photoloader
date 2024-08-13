@@ -26,15 +26,11 @@ else
 	GO_PRIVATE := $(GIT_DOMAIN)
 endif
 
-# Информация о версии приложения
-BUILD_NUMBER ?= 0
-BRANCH_NAME ?= local
-
 # Флаги компиляции
 LDFLAGS := -X $(PACKAGE_NAME)/config.ServiceName=$(PACKAGE_NAME) \
     -X $(PACKAGE_NAME)/config.AppName=$(APP_CMD) \
     -X $(PACKAGE_NAME)/config.GitHash=$$(git rev-parse HEAD) \
-    -X $(PACKAGE_NAME)/config.Version=$(BRANCH_NAME)-$(BUILD_NUMBER) \
+    -X $(PACKAGE_NAME)/config.Version=$$(git describe --tags) \
     -X $(PACKAGE_NAME)/config.BuildAt=$$(date --utc +%FT%TZ)
 
 # Цели для работы с Docker и сборкой проекта

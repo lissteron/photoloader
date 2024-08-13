@@ -69,7 +69,6 @@ func ver() *cli.Command {
 			log.Printf("GitHash: %s", config.GitHash)
 			log.Printf("Version: %s", config.Version)
 			log.Printf("BuildAt: %s", config.BuildAt)
-			log.Printf("ReleaseID: %s", config.ReleaseID)
 
 			return nil
 		},

@@ -9,6 +9,5 @@ var (
 	Version     string
 	GitHash     string
 	BuildAt     string
-	ReleaseID   string
 	StartTime   = time.Now()
 )
