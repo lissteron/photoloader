@@ -1,0 +1,5 @@
+services:
+  app:
+    env_file: # Нужен docker compose >= 2.24.0
+      - path: .env  # Подключаем файл .env
+        required: false  # Файл не обязателен

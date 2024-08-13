@@ -1,0 +1,45 @@
+services:
+  app:
+    build:
+      context: .  # Используем текущую директорию в качестве контекста сборки
+      dockerfile: build.Dockerfile  # Используем специальный Dockerfile для сборки
+      args:
+        GO_VERSION: ${GO_VERSION}  # Передаем версию Go в качестве аргумента сборки
+    tty: true  # Включаем поддержку терминала для интерактивной работы
+    working_dir: /src  # Устанавливаем рабочую директорию внутри контейнера
+    environment:
+      GIT_DOMAIN: ${GIT_DOMAIN}  # Домен Git
+      CGO_ENABLED: 1  # Включаем поддержку CGO для флага -race в тестах
+      PHOTO_DIR: "./upload/"
+    env_file:
+      - .env.sample  # Подключаем файл .env
+    ports:
+      - '8080:8080'  # Пробрасываем порт 8080 на хост
+    volumes:
+      - ./:/src  # Монтируем текущую директорию в /src внутри контейнера
+      - go-mod-cache:/go/pkg  # Подключаем внешний том для кеша модулей Go
+      - go-build-cache:/root/.cache/go-build  # Подключаем внешний том для кеша сборки Go
+
+  linter:
+    image: golangci/golangci-lint:v${LINT_VERSION}-alpine  # Используем образ линтера с указанной версией
+    working_dir: /src  # Устанавливаем рабочую директорию внутри контейнера
+    volumes:
+      - ./:/src  # Монтируем текущую директорию в /src внутри контейнера
+      - go-mod-cache:/go/pkg  # Подключаем внешний том для кеша модулей Go
+      - go-build-cache:/root/.cache/go-build  # Подключаем внешний том для кеша сборки Go
+      - go-lint-cache:/root/.cache/golangci-lint  # Подключаем внешний том для кеша линтера
+
+  mockery:
+    image: vektra/mockery:v${MOCKERY_VERSION}  # Используем образ mockery с указанной версией
+    working_dir: /src  # Устанавливаем рабочую директорию внутри контейнера
+    entrypoint: ""  # Устанавливаем пустой entrypoint, чтобы можно было задавать команды через docker-compose run
+    volumes:
+      - ./:/src  # Монтируем текущую директорию в /src внутри контейнера
+
+volumes:
+  go-mod-cache:
+    external: true  # Внешний том для кеша модулей Go
+  go-build-cache:
+    external: true  # Внешний том для кеша сборки Go
+  go-lint-cache:
+    external: true  # Внешний том для кеша линтера
